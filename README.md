@@ -1,6 +1,6 @@
 # İş Başvuru ve Değerlendirme Sistemi
 
-Kkapsamlı bir iş başvuru ve değerlendirme platformu. Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
+Kapsamlı bir iş başvuru ve değerlendirme platformu. Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
 
 ## 🌟 Özellikler
 
