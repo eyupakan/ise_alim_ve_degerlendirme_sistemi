@@ -37,22 +37,60 @@ try {
 }
 ?>
 
-<div class="row justify-content-center">
+<div class="row justify-content-center" style="min-height: 100vh; padding: 2rem 0;">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="border-radius: 12px 12px 0 0;">
                 <h3 class="card-title mb-0">
                     <?php echo htmlspecialchars($application['position_title']); ?> - Deneyim & Referanslar
                 </h3>
             </div>
             <div class="card-body">
-                <!-- Progress bar -->
-                <div class="progress mb-4" style="height: 2px;">
-                    <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                <!-- Progress Steps -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center stepper">
+                        <div class="step">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Kişisel Bilgiler</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Eğitim</div>
+                        </div>
+                        <div class="step active">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Deneyim</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Testler</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center mb-4">
-                    <small class="text-muted">Adım 3/4 - Deneyim & Referanslar</small>
-                </div>
+                <style>
+                .stepper { gap: 0.5rem; }
+                .step { text-align: center; flex: 1; position: relative; }
+                .step-circle {
+                    width: 36px; height: 36px; border-radius: 50%;
+                    background: #0d6efd; color: #fff; display: flex; align-items: center; justify-content: center;
+                    margin: 0 auto 6px auto; font-weight: bold; font-size: 18px; box-shadow: 0 2px 8px #0d6efd22;
+                    border: 2px solid #0d6efd;
+                    position: relative;
+                    z-index: 1;
+                }
+                .step:not(.active) .step-circle {
+                    background: #e9ecef; color: #6c757d; border: 2px solid #ced4da;
+                }
+                .step-label { font-size: 13px; color: #6c757d; }
+                .step.active .step-label { color: #0d6efd; font-weight: 600; }
+                .step:not(:last-child)::after {
+                    content: ""; position: absolute; top: 18px; left: 50%; height: 4px;
+                    width: calc(100% - 36px); background: #ced4da; z-index: 0;
+                }
+                .step.active:not(:last-child)::after {
+                    background: #0d6efd;
+                }
+                </style>
 
                 <form action="process_step3.php" method="POST" id="experienceForm">
                     <input type="hidden" name="application_id" value="<?php echo $application_id; ?>">
@@ -61,54 +99,73 @@ try {
                     <h5 class="mb-3">İş Deneyimi</h5>
                     <div id="experienceContainer">
                         <div class="experience-item border rounded p-3 mb-3">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Şirket Adı <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="experience[0][company_name]" required>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="row flex-grow-1">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Şirket Adı <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="experience[0][company_name]" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Pozisyon <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="experience[0][position]" required>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Pozisyon <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="experience[0][position]" required>
-                                </div>
+                                <button type="button" class="btn btn-outline-danger btn-sm delete-experience-item ms-3">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Başlangıç Tarihi <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control start-date" name="experience[0][start_date]" required>
+                                    <input type="date" class="form-control" name="experience[0][start_date]" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input is-current" type="checkbox" name="experience[0][is_current]">
-                                        <label class="form-check-label">Halen çalışıyorum</label>
-                                    </div>
-                                    <input type="date" class="form-control end-date" name="experience[0][end_date]" required>
+                                    <label class="form-label">Bitiş Tarihi</label>
+                                    <input type="date" class="form-control end-date" name="experience[0][end_date]">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12 mb-3">
-                                    <label class="form-label">Sorumluluklar ve Başarılar</label>
-                                    <textarea class="form-control" name="experience[0][responsibilities]" rows="3"></textarea>
+                                    <div class="form-check">
+                                        <input class="form-check-input is-current" type="checkbox" name="experience[0][is_current]" id="is_current_exp_0">
+                                        <label class="form-check-label" for="is_current_exp_0">
+                                            Devam ediyorum
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Açıklama</label>
+                                    <textarea class="form-control" name="experience[0][description]" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary mb-4" id="addExperience">
-                        <i class="fas fa-plus"></i> Deneyim Ekle
-                    </button>
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-outline-primary" id="addExperience">
+                            <i class="fas fa-plus"></i> Deneyim Ekle
+                        </button>
+                    </div>
 
                     <!-- Referanslar -->
                     <h5 class="mb-3">Referanslar</h5>
                     <div id="referenceContainer">
                         <div class="reference-item border rounded p-3 mb-3">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Ad Soyad <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="reference[0][name]" required>
+                             <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="row flex-grow-1">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Ad Soyad <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="reference[0][name]" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Şirket <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="reference[0][company]" required>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Şirket <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="reference[0][company]" required>
-                                </div>
+                                <button type="button" class="btn btn-outline-danger btn-sm delete-reference-item ms-3">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -128,24 +185,27 @@ try {
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary mb-4" id="addReference">
-                        <i class="fas fa-plus"></i> Referans Ekle
-                    </button>
-
-                    <!-- KVKK Onayı -->
                     <div class="mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="kvkk" name="kvkk_accepted" required>
-                            <label class="form-check-label" for="kvkk">
-                                Kişisel verilerimin işlenmesine izin veriyorum. <span class="text-danger">*</span>
-                            </label>
-                        </div>
+                        <button type="button" class="btn btn-outline-primary" id="addReference">
+                            <i class="fas fa-plus"></i> Referans Ekle
+                        </button>
+                    </div>
+                    <!-- KVKK Onayı -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="kvkk" name="kvkk_accepted" required>
+                        <label class="form-check-label" for="kvkk">
+                            Kişisel verilerimin işlenmesine izin veriyorum. <span class="text-danger">*</span>
+                        </label>
+                    </div>
                     </div>
 
-
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Devam Et</button>
-                        <a href="index.php" class="btn btn-light">İptal</a>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="apply_step2.php?application_id=<?php echo $application_id; ?>" class="btn btn-outline-secondary" style="border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; transition: all 0.2s ease;">
+                            <i class="fas fa-arrow-left me-2"></i>Geri Dön
+                        </a>
+                        <button type="submit" class="btn btn-primary" style="border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 500; transition: all 0.2s ease;">
+                            Devam Et<i class="fas fa-arrow-right ms-2"></i>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -156,6 +216,22 @@ try {
 <script>
 let experienceCount = 1;
 let referenceCount = 1;
+
+// Helper function to add delete functionality
+function addDeleteFunctionality(itemElement, itemType) {
+    const deleteButton = itemElement.querySelector(`.delete-${itemType}-item`);
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function() {
+            // Don't allow deleting the last item for experience and reference
+            const container = document.getElementById(`${itemType}Container`);
+            if (container.querySelectorAll(`.${itemType}-item`).length > 1) {
+                itemElement.remove();
+            } else {
+                 alert(`En az bir ${itemType === 'experience' ? 'deneyim' : 'referans'} bilgisi girmelisiniz.`);
+            }
+        });
+    }
+}
 
 // Deneyim ekleme fonksiyonu
 document.getElementById('addExperience').addEventListener('click', function() {
@@ -170,9 +246,18 @@ document.getElementById('addExperience').addEventListener('click', function() {
         }
     });
 
-    // Event listener'ları yeniden ekle
-    template.querySelector('.is-current').addEventListener('change', toggleEndDate);
+    // Event listener'ları yeniden ekle (is-current)
+    const isCurrentCheckbox = template.querySelector('.is-current');
+    if (isCurrentCheckbox) {
+         // Clone'lanan checkbox'ın ID'sini ve for niteliğini güncelle
+        isCurrentCheckbox.id = `is_current_exp_${experienceCount}`;
+        template.querySelector(`label[for^='is_current_exp_']`).setAttribute('for', `is_current_exp_${experienceCount}`);
+        isCurrentCheckbox.addEventListener('change', toggleEndDate);
+    }
     
+     // Silme butonu functionality ekle
+    addDeleteFunctionality(template, 'experience');
+
     container.appendChild(template);
     experienceCount++;
 });
@@ -190,13 +275,17 @@ document.getElementById('addReference').addEventListener('click', function() {
         }
     });
     
+     // Silme butonu functionality ekle
+    addDeleteFunctionality(template, 'reference');
+
     container.appendChild(template);
     referenceCount++;
 });
 
 // Devam ediyorum checkbox'ı için event listener
 function toggleEndDate(e) {
-    const endDateInput = e.target.closest('.experience-item').querySelector('.end-date');
+    const experienceItem = e.target.closest('.experience-item');
+    const endDateInput = experienceItem.querySelector('.end-date');
     
     if (e.target.checked) {
         endDateInput.value = '';
@@ -208,8 +297,15 @@ function toggleEndDate(e) {
     }
 }
 
-// İlk deneyim formu için event listener ekle
-document.querySelector('.is-current').addEventListener('change', toggleEndDate);
+// Sayfa yüklendiğinde mevcut item'lara silme fonksiyonu ekle
+document.querySelectorAll('.experience-item').forEach(item => addDeleteFunctionality(item, 'experience'));
+document.querySelectorAll('.reference-item').forEach(item => addDeleteFunctionality(item, 'reference'));
+
+// İlk deneyim formu için event listener ekle (varsa)
+const firstIsCurrentCheckboxExp = document.querySelector('.experience-item .is-current');
+if (firstIsCurrentCheckboxExp) {
+    firstIsCurrentCheckboxExp.addEventListener('change', toggleEndDate);
+}
 </script>
 
 <?php require_once 'includes/footer.php'; ?> 

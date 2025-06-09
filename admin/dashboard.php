@@ -26,7 +26,10 @@ try {
     $pending_applications = $stmt->fetch()['count'];
 
     // Toplam aday
-    $query = "SELECT COUNT(*) as count FROM candidates";
+    $query = "SELECT COUNT(DISTINCT c.id) as count 
+              FROM candidates c 
+              INNER JOIN applications a ON c.id = a.candidate_id 
+              WHERE a.status != 'deleted'";
     $stmt = $db->prepare($query);
     $stmt->execute();
     $total_candidates = $stmt->fetch()['count'];
@@ -169,6 +172,11 @@ try {
                         <li class="nav-item">
                             <a class="nav-link" href="applications.php">
                                 <i class="bi bi-file-earmark-text"></i> Başvurular
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="interviews.php">
+                                <i class="bi bi-calendar-event"></i> Mülakatlar
                             </a>
                         </li>
                         <li class="nav-item mt-3">

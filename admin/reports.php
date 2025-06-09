@@ -121,6 +121,71 @@ try {
     $stmt->execute();
     $upcoming_interviews = $stmt->fetchAll();
 
+    // Cinsiyet dağılımı verisi (filtreli)
+    $gender_query = "SELECT c.gender, COUNT(*) as count FROM candidates c INNER JOIN applications a ON c.id = a.candidate_id WHERE 1=1";
+    $params = [];
+    if ($position_id > 0) {
+        $gender_query .= " AND a.position_id = :position_id";
+        $params[':position_id'] = $position_id;
+    }
+    if ($start_date && $end_date) {
+        $gender_query .= " AND DATE(a.created_at) BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $start_date;
+        $params[':end_date'] = $end_date;
+    }
+    $gender_query .= " GROUP BY c.gender";
+    $gender_stmt = $db->prepare($gender_query);
+    $gender_stmt->execute($params);
+    $gender_data = $gender_stmt->fetchAll(PDO::FETCH_ASSOC);
+    $gender_labels = [];
+    $gender_counts = [];
+    $gender_map = [
+        'male' => 'Erkek',
+        'female' => 'Kadın',
+        'other' => 'Belirtmek İstemiyorum',
+        '' => 'Belirtilmemiş'
+    ];
+    foreach ($gender_data as $row) {
+        $gender_labels[] = $gender_map[$row['gender']] ?? $row['gender'];
+        $gender_counts[] = (int)$row['count'];
+    }
+
+    // Yaş dağılımı verisi (filtreli)
+    $age_ranges = [
+        '18-24' => [18, 24],
+        '25-34' => [25, 34],
+        '35-44' => [35, 44],
+        '45-54' => [45, 54],
+        '55+'   => [55, 150]
+    ];
+    $age_counts = array_fill_keys(array_keys($age_ranges), 0);
+    $today = date('Y-m-d');
+    $age_query = "SELECT c.birth_date FROM candidates c INNER JOIN applications a ON c.id = a.candidate_id WHERE c.birth_date IS NOT NULL AND c.birth_date != ''";
+    $params = [];
+    if ($position_id > 0) {
+        $age_query .= " AND a.position_id = :position_id";
+        $params[':position_id'] = $position_id;
+    }
+    if ($start_date && $end_date) {
+        $age_query .= " AND DATE(a.created_at) BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $start_date;
+        $params[':end_date'] = $end_date;
+    }
+    $age_query .= " GROUP BY c.id, c.birth_date";
+    $age_stmt = $db->prepare($age_query);
+    $age_stmt->execute($params);
+    while ($row = $age_stmt->fetch(PDO::FETCH_ASSOC)) {
+        $age = floor((strtotime($today) - strtotime($row['birth_date'])) / (365.25*24*60*60));
+        foreach ($age_ranges as $label => [$min, $max]) {
+            if ($age >= $min && $age <= $max) {
+                $age_counts[$label]++;
+                break;
+            }
+        }
+    }
+    $age_labels = array_keys($age_counts);
+    $age_data = array_values($age_counts);
+
 } catch (PDOException $e) {
     die("Sorgu hatası: " . $e->getMessage());
 }
@@ -222,8 +287,8 @@ try {
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="reports.php">
-                                <i class="bi bi-file-earmark-bar-graph"></i> Raporlar
+                            <a class="nav-link" href="interviews.php">
+                                <i class="bi bi-calendar-event"></i> Mülakatlar
                             </a>
                         </li>
                         <li class="nav-item mt-3">
@@ -330,18 +395,36 @@ try {
                     </div>
                 </div>
 
+                <!-- Cinsiyet ve Yaş Dağılımı Grafiklerini Yan Yana Göster -->
                 <div class="row mb-4">
-                    <!-- Aylık Başvuru Trendi -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Adayların Cinsiyet Dağılımı</h5>
+                                <canvas id="genderChart" style="min-height:300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Adayların Yaş Dağılımı</h5>
+                                <canvas id="ageChart" style="min-height:300px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aylık Başvuru Trendi ve Pozisyon Bazlı İstatistikler Yan Yana -->
+                <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Aylık Başvuru Trendi</h5>
-                                <canvas id="monthlyTrend"></canvas>
+                                <canvas id="monthlyTrend" style="min-height:350px;"></canvas>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Pozisyon Bazlı İstatistikler -->
                     <div class="col-md-6">
                         <div class="card h-100">
                             <div class="card-body">
@@ -358,7 +441,8 @@ try {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($position_stats as $stat): ?>
+                                            <?php foreach (
+                                                $position_stats as $stat): ?>
                                                 <tr>
                                                     <td><?php echo htmlspecialchars($stat['title']); ?></td>
                                                     <td><?php echo $stat['total_applications']; ?></td>
@@ -660,6 +744,64 @@ try {
             } else {
                 meetingLinkDiv.style.display = 'none';
                 locationDiv.style.display = 'block';
+            }
+        });
+
+        // Cinsiyet Dağılımı Grafiği
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, {
+            type: 'pie',
+            data: {
+                labels: <?php echo json_encode($gender_labels); ?>,
+                datasets: [{
+                    data: <?php echo json_encode($gender_counts); ?>,
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: {
+                        display: true,
+                        text: 'Tüm Adayların Cinsiyet Dağılımı',
+                        font: { size: 16 }
+                    }
+                }
+            }
+        });
+
+        // Yaş Dağılımı Bar Grafiği
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        new Chart(ageCtx, {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode($age_labels); ?>,
+                datasets: [{
+                    label: 'Aday Sayısı',
+                    data: <?php echo json_encode($age_data); ?>,
+                    backgroundColor: '#36A2EB'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Adayların Yaş Dağılımı',
+                        font: { size: 16 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Aday Sayısı' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Yaş Aralığı' }
+                    }
+                }
             }
         });
     </script>

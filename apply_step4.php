@@ -73,13 +73,51 @@ try {
                 </h3>
             </div>
             <div class="card-body">
-                <!-- Progress bar -->
-                <div class="progress mb-4" style="height: 2px;">
-                    <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                <!-- Progress Steps -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center stepper">
+                        <div class="step">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Kişisel Bilgiler</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Eğitim</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Deneyim</div>
+                        </div>
+                        <div class="step active">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Testler</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center mb-4">
-                    <small class="text-muted">Adım 4/4 - Testler</small>
-                </div>
+                <style>
+                .stepper { gap: 0.5rem; }
+                .step { text-align: center; flex: 1; position: relative; }
+                .step-circle {
+                    width: 36px; height: 36px; border-radius: 50%;
+                    background: #0d6efd; color: #fff; display: flex; align-items: center; justify-content: center;
+                    margin: 0 auto 6px auto; font-weight: bold; font-size: 18px; box-shadow: 0 2px 8px #0d6efd22;
+                    border: 2px solid #0d6efd;
+                    position: relative;
+                    z-index: 1;
+                }
+                .step:not(.active) .step-circle {
+                    background: #e9ecef; color: #6c757d; border: 2px solid #ced4da;
+                }
+                .step-label { font-size: 13px; color: #6c757d; }
+                .step.active .step-label { color: #0d6efd; font-weight: 600; }
+                .step:not(:last-child)::after {
+                    content: ""; position: absolute; top: 18px; left: 50%; height: 4px;
+                    width: calc(100% - 36px); background: #ced4da; z-index: 0;
+                }
+                .step.active:not(:last-child)::after {
+                    background: #0d6efd;
+                }
+                </style>
 
                 <?php if (empty($tests)): ?>
                     <div class="alert alert-info">

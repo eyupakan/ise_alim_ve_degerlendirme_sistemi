@@ -12,6 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $linkedin_url = $_POST['linkedin_url'] ?? '';
     $github_url = $_POST['github_url'] ?? '';
     $portfolio_url = $_POST['portfolio_url'] ?? '';
+    $birth_date = $_POST['birth_date'] ?? null;
+    $gender = $_POST['gender'] ?? '';
+    $address = $_POST['address'] ?? '';
+
+    // Cinsiyet kontrolü
+    if (!in_array($gender, ['male', 'female', 'other'])) {
+        die("Geçersiz cinsiyet seçimi.");
+    }
+
     $photo = null;
 
     // Fotoğraf yükleme işlemi
@@ -34,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->beginTransaction();
 
         // Aday kaydı oluştur
-        $stmt = $db->prepare("INSERT INTO candidates (first_name, last_name, city, email, phone, linkedin_url, github_url, portfolio_url, photo_path, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$first_name, $last_name, $city, $email, $phone, $linkedin_url, $github_url, $portfolio_url, $photo]);
+        $stmt = $db->prepare("INSERT INTO candidates (first_name, last_name, city, email, phone, linkedin_url, github_url, portfolio_url, photo_path, birth_date, gender, address, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$first_name, $last_name, $city, $email, $phone, $linkedin_url, $github_url, $portfolio_url, $photo, $birth_date, $gender, $address]);
         $candidate_id = $db->lastInsertId();
 
         // Başvuru kaydı oluştur
@@ -144,6 +153,26 @@ try {
                     <div class="mb-3">
                         <label for="portfolio_url" class="form-label">Portfolyo Sitesi</label>
                         <input type="url" class="form-control" id="portfolio_url" name="portfolio_url" placeholder="https://...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="birth_date" class="form-label">Doğum Tarihi</label>
+                        <input type="date" class="form-control" id="birth_date" name="birth_date">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Cinsiyet <span class="text-danger">*</span></label>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="">Seçiniz</option>
+                            <option value="male">Erkek</option>
+                            <option value="female">Kadın</option>
+                            <option value="other">Belirtmek İstemiyorum</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Adres</label>
+                        <textarea class="form-control" id="address" name="address" rows="3"></textarea>
                     </div>
 
                     <div class="mb-3">

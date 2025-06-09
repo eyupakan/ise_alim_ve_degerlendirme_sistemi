@@ -66,12 +66,9 @@ try {
     $test_points = $test_result['average_score'];
 
     // Pozisyonun puan katsayılarını al
-    $stmt = $db->prepare("SELECT portfolio_point, certificate_point, education_point, reference_point, experience_point, driver_license_point FROM positions WHERE id = ?");
+    $stmt = $db->prepare("SELECT portfolio_point, certificate_point, education_point, reference_point, experience_point FROM positions WHERE id = ?");
     $stmt->execute([$application['position_id']]);
     $position_points = $stmt->fetch();
-
-    // Sürücü belgesi kontrolü (örnek: başvuru formunda driver_license var mı? 1 ise puan ver, yoksa 0)
-    $driver_license = isset($application['driver_license']) ? (int)$application['driver_license'] : 0;
 
     // Toplam puan hesaplama (her alanın puanı * pozisyonun katsayısı)
     $total_points =
@@ -80,7 +77,6 @@ try {
         ($application['certificate_points'] * $position_points['certificate_point']) +
         ($application['experience_points'] * $position_points['experience_point']) +
         ($application['reference_points'] * $position_points['reference_point']) +
-        ($driver_license * $position_points['driver_license_point']) +
         $test_points;
 
     // Başvuruyu tamamla

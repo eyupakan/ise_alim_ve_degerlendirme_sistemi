@@ -43,8 +43,8 @@ try {
             $stmt = $db->prepare("
                 INSERT INTO educations (
                     candidate_id, school_name, degree, field_of_study, 
-                    start_date, end_date, is_current
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    start_date, end_date, is_current, gpa
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
                 $application['candidate_id'],
@@ -53,11 +53,55 @@ try {
                 $education['field_of_study'],
                 $education['start_date'],
                 $end_date,
-                $is_current
+                $is_current,
+                !empty($education['gpa']) ? $education['gpa'] : null
             ]);
 
             // Puanlama
-            $education_points += $is_current ? 1 : 3;
+            $base_points = $is_current ? 1 : 3; // Temel puan (devam ediyor: 1, tamamlandı: 3)
+            
+            // GPA bazlı ek puanlar
+            $gpa_points = 0;
+            if (!empty($education['gpa'])) {
+                $gpa = floatval($education['gpa']);
+                $gpa_system = $education['gpa_system'] ?? '100'; // Varsayılan olarak 100'lük sistem
+                
+                if ($gpa_system === '100') {
+                    // 100'lük sistem için puanlama ve değer kontrolü
+                    if ($gpa > 100) {
+                        $gpa = 100; // Maksimum 100 olarak sınırla
+                    }
+                    if ($gpa < 0) {
+                        $gpa = 0; // Minimum 0 olarak sınırla
+                    }
+                    
+                    if ($gpa >= 85) {
+                        $gpa_points = 10;
+                    } elseif ($gpa >= 70) {
+                        $gpa_points = 7;
+                    } elseif ($gpa >= 60) {
+                        $gpa_points = 3;
+                    }
+                } else {
+                    // 4'lük sistem için puanlama ve değer kontrolü
+                    if ($gpa > 4) {
+                        $gpa = 4; // Maksimum 4 olarak sınırla
+                    }
+                    if ($gpa < 0) {
+                        $gpa = 0; // Minimum 0 olarak sınırla
+                    }
+                    
+                    if ($gpa >= 3.50) {
+                        $gpa_points = 10;
+                    } elseif ($gpa >= 3.00) {
+                        $gpa_points = 7;
+                    } elseif ($gpa >= 2.50) {
+                        $gpa_points = 3;
+                    }
+                }
+            }
+            
+            $education_points += $base_points + $gpa_points;
         }
     }
 

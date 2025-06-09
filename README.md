@@ -1,6 +1,12 @@
 # İş Başvuru ve Değerlendirme Sistemi
 
+<<<<<<< HEAD
 Kapsamlı bir iş başvuru ve değerlendirme platformu. Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
+=======
+Kapsamlı bir iş başvuru ve değerlendirme platformu. Mevcut sistemlerin yapay zeka ile kelime eşleme sistemlerinin doğru adayı tespit edememe riskine karşılık olarak iş başvuru formunu bir standart haline getirerek adaylar için bir fırsat eşitliği yakalamasını hedefliyorum.
+ 
+Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
+>>>>>>> 5303d69 (Bazı hatalar giderildi, tasarımda küçük değişiklikler yapıldı, forma yeni alanlar eklendi)
 
 ## 🌟 Özellikler
 
@@ -29,7 +35,6 @@ Kapsamlı bir iş başvuru ve değerlendirme platformu. Bu sistem, adayların ba
 - MySQL 5.7 veya üzeri
 - Composer
 
-
 ## 📁 Dizin Yapısı
 
 ```
@@ -43,29 +48,41 @@ Kapsamlı bir iş başvuru ve değerlendirme platformu. Bu sistem, adayların ba
 ```
 
 
-## 👥 Kullanıcı Rolleri
-
-1. **Ziyaretçi**
-   - İş ilanlarını görüntüleme
-   - Başvuru yapma
-
-2. **Admin**
-   - İş ilanı yönetimi
-   - Başvuru değerlendirme
-   - Test yönetimi
-
-## 📝 Başvuru Süreci
-
-1. Kullanıcı açık pozisyonları görüntüler
-2. İstediği pozisyona başvurur
-3. 4 adımlı başvuru formunu doldurur
-4. Gerekli testleri tamamlar
+## 📚 Kullanıcı ve Geliştirici Dokümantasyonu
 
 
+#### Başvuru Süreci
+1. **İş İlanlarını Görüntüleme**: Açık pozisyonları listeleyen sayfadan ilgilendiğiniz pozisyonu seçin.
+2. **Başvuru Yapma**: Seçtiğiniz pozisyona başvuru yapmak için "Başvuru Yap" butonuna tıklayın.
+3. **Başvuru Formunu Doldurma**: 4 adımlı başvuru sürecini takip edin:
+   - **Kişisel Bilgiler**: Ad, soyad, iletişim bilgileri gibi temel bilgileri girin.
+   - **Eğitim Bilgileri**: Mezun olduğunuz okullar, bölümler ve mezuniyet tarihlerini belirtin.
+   - **İş Deneyimi**: Önceki iş deneyimlerinizi aylık bazda detaylı olarak girin.
+   - **Referanslar**: İş veya eğitim hayatınızdan referans olabilecek kişilerin iletişim bilgilerini ekleyin.
+4. **Testleri Tamamlama**: Başvurunuzu tamamlamak için gerekli testleri çözün.
+5. **Başvuru Onayı**: Tüm adımları tamamladıktan sonra başvurunuz onaylanacak ve değerlendirme sürecine alınacaktır.
 
+#### Admin Paneli
+- **İş İlanı Yönetimi**: Yeni iş ilanları ekleyebilir, mevcut ilanları düzenleyebilir veya silebilirsiniz.
+- **Başvuru Değerlendirme**: Gelen başvuruları görüntüleyebilir ve durumlarını güncelleyebilirsiniz.
+- **Test Yönetimi**: Test sorularını ekleyebilir, düzenleyebilir veya silebilirsiniz.
+
+
+#### Proje Yapısı
+- **admin/**: Yönetici paneli ile ilgili dosyalar.
+- **api/**: API endpoint'leri ve ilgili işlemler. (Openrouter üzerinden Meta: Llama 4 Scout (free) api'ı kullanılmıştır.)
+- **config/**: Veritabanı bağlantısı gibi yapılandırma dosyaları.
+- **database/**: Veritabanı şemaları ve migration dosyaları.
+- **includes/**: Ortak PHP fonksiyonları ve yardımcı dosyalar.
+- **uploads/**: Kullanıcıların yüklediği dosyalar (fotoğraflar vb.).
+- **vendor/**: Composer ile yönetilen bağımlılıklar.
+
+#### Teknik Gereksinimler
+- **PHP 7.4+**: Projenin çalışması için PHP 7.4 veya üzeri sürüm gereklidir.
+- **MySQL 5.7+**: Veritabanı işlemleri için MySQL 5.7 veya üzeri sürüm gereklidir.
+- **Composer**: Paket yönetimi için Composer kullanılmaktadır.
 
 ## 📞 İletişim
 
 - Eyüp Akan (eyupakan@outlook.com)
 - LinkedIn https://www.linkedin.com/in/eyupakan/
-

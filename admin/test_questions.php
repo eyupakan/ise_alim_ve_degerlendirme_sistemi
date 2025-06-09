@@ -234,6 +234,11 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="bi bi-file-earmark-text"></i> Başvurular
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="interviews.php">
+                                <i class="bi bi-calendar-event"></i> Mülakatlar
+                            </a>
+                        </li>
                         <li class="nav-item mt-3">
                             <a class="nav-link text-danger" href="logout.php">
                                 <i class="bi bi-box-arrow-right"></i> Çıkış Yap

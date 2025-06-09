@@ -30,16 +30,43 @@ if (!isset($_POST['action'])) {
 }
 
 // ID kontrolü
-if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+if (!isset($_POST['id']) && !isset($_POST['ids'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid application ID']);
     exit;
 }
 
-$applicationId = intval($_POST['id']);
+$applicationId = isset($_POST['id']) ? intval($_POST['id']) : null;
+$applicationIds = isset($_POST['ids']) ? json_decode($_POST['ids'], true) : null;
 
 try {
     switch ($_POST['action']) {
+        case 'bulk_delete':
+            if (!is_array($applicationIds) || empty($applicationIds)) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Geçersiz başvuru ID\'leri']);
+                exit;
+            }
+
+            // Önce test sonuçlarını sil
+            $placeholders = str_repeat('?,', count($applicationIds) - 1) . '?';
+            $query = "DELETE FROM test_results WHERE application_id IN ($placeholders)";
+            $stmt = $db->prepare($query);
+            $stmt->execute($applicationIds);
+
+            // Sonra başvuruları sil
+            $query = "DELETE FROM applications WHERE id IN ($placeholders)";
+            $stmt = $db->prepare($query);
+            $stmt->execute($applicationIds);
+
+            if ($stmt->rowCount() > 0) {
+                echo json_encode(['success' => true, 'message' => 'Seçili başvurular başarıyla silindi']);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Başvurular bulunamadı']);
+            }
+            break;
+
         case 'delete':
             // Önce test sonuçlarını sil
             $query = "DELETE FROM test_results WHERE application_id = ?";
@@ -52,10 +79,10 @@ try {
             $stmt->execute([$applicationId]);
 
             if ($stmt->rowCount() > 0) {
-                echo json_encode(['success' => true, 'message' => 'Application deleted successfully']);
+                echo json_encode(['success' => true, 'message' => 'Başvuru başarıyla silindi']);
             } else {
                 http_response_code(404);
-                echo json_encode(['error' => 'Application not found']);
+                echo json_encode(['error' => 'Başvuru bulunamadı']);
             }
             break;
 

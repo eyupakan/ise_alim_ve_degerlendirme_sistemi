@@ -221,6 +221,11 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
                                 <i class="bi bi-file-earmark-text"></i> Başvurular
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="interviews.php">
+                                <i class="bi bi-calendar-event"></i> Mülakatlar
+                            </a>
+                        </li>                       
                         <li class="nav-item mt-3">
                             <a class="nav-link text-danger" href="logout.php">
                                 <i class="bi bi-box-arrow-right"></i> Çıkış Yap
@@ -333,6 +338,9 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <!-- Seçilen testlerin zorunluluk durumunu belirleme alanı -->
+                        <div id="add-selected-tests-container" class="mb-3"></div>
+
                         <div class="mb-3">
                             <label for="status" class="form-label">Durum</label>
                             <select class="form-select" id="status" name="status" required>
@@ -382,9 +390,7 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editPositionModalLabel">Pozisyon Düzenle</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editPositionForm">
@@ -411,6 +417,9 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <!-- Seçilen testlerin zorunluluk durumunu belirleme alanı -->
+                        <div id="edit-selected-tests-container" class="mb-3"></div>
+
                         <div class="form-group">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="edit_status" name="status">
@@ -441,11 +450,6 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
                             <label for="edit_experience_point">Deneyim Puanı</label>
                             <input type="number" class="form-control" id="edit_experience_point" name="experience_point"
                                 min="0" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_driver_license_point">Sürücü Belgesi Puanı</label>
-                            <input type="number" class="form-control" id="edit_driver_license_point"
-                                name="driver_license_point" min="0" value="0">
                         </div>
                     </form>
                 </div>
@@ -500,13 +504,78 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Select2'yi başlat
+        // Seçilen testler için HTML oluşturma fonksiyonu
+        function createSelectedTestHtml(testId, testName, isRequired = false, formPrefix = 'add') {
+            const checked = isRequired ? 'checked' : '';
+            return `
+                <div class="selected-test-item d-flex justify-content-between align-items-center border rounded p-2 mb-2" data-test-id="${testId}">
+                    <span>${testName}</span>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="${formPrefix}-required-test-${testId}" name="position_tests[${testId}][required]" value="1" ${checked}>
+                        <label class="form-check-label" for="${formPrefix}-required-test-${testId}">Zorunlu</label>
+                    </div>
+                    <input type="hidden" name="position_tests[${testId}][test_id]" value="${testId}">
+                </div>
+            `;
+        }
+
+        // Seçilen testleri güncelleme fonksiyonu
+        function updateSelectedTestsContainer(selectElementId, containerId, formPrefix) {
+            const selectedTestsContainer = document.getElementById(containerId);
+            selectedTestsContainer.innerHTML = ''; // Konteyneri temizle
+
+            // Select2'de seçili olan testler
+            const selectedTests = $(`#${selectElementId}`).select2('data');
+
+            selectedTests.forEach(test => {
+                // Düzenleme modalında mevcut zorunluluk durumunu al (varsa)
+                let isRequired = false; // Varsayılan olarak isteğe bağlı
+                // TODO: Düzenleme modalı için mevcut pozisyonun testlerinin zorunluluk durumunu backend'den çekip buraya aktarmamız gerekecek.
+                // Şu an için, düzenleme modalı açıldığında bu fonksiyonun dışında ele alınacak.
+
+                const testHtml = createSelectedTestHtml(test.id, test.text, isRequired, formPrefix);
+                selectedTestsContainer.innerHTML += testHtml;
+            });
+        }
+
         $(document).ready(function () {
+            // Select2'yi başlat
             $('#tests, #edit_tests').select2({
                 theme: 'bootstrap-5',
                 width: '100%',
                 placeholder: 'Test seçin',
                 allowClear: true
+            });
+
+            // Yeni Pozisyon Ekle modalı için Select2 olayları
+            $('#tests').on('select2:select', function (e) {
+                const test = e.params.data;
+                const container = document.getElementById('add-selected-tests-container');
+                const testHtml = createSelectedTestHtml(test.id, test.text, false, 'add'); // Yeni eklenen varsayılan olarak isteğe bağlı
+                container.innerHTML += testHtml;
+            }).on('select2:unselect', function (e) {
+                const testId = e.params.data.id;
+                const container = document.getElementById('add-selected-tests-container');
+                const itemToRemove = container.querySelector(`.selected-test-item[data-test-id=\"${testId}\"]`);
+                if (itemToRemove) {
+                    itemToRemove.remove();
+                }
+            });
+
+            // Pozisyon Düzenle modalı için Select2 olayları
+            $('#edit_tests').on('select2:select', function (e) {
+                 const test = e.params.data;
+                const container = document.getElementById('edit-selected-tests-container');
+                // Düzenleme modalında yeni eklenen test varsayılan olarak isteğe bağlı
+                const testHtml = createSelectedTestHtml(test.id, test.text, false, 'edit');
+                container.innerHTML += testHtml;
+            }).on('select2:unselect', function (e) {
+                const testId = e.params.data.id;
+                const container = document.getElementById('edit-selected-tests-container');
+                 const itemToRemove = container.querySelector(`.selected-test-item[data-test-id=\"${testId}\"]`);
+                if (itemToRemove) {
+                    itemToRemove.remove();
+                }
             });
         });
 
@@ -637,8 +706,28 @@ echo "<!-- Debug: Test Sayısı: " . count($tests) . " -->";
                             document.getElementById('edit_requirements').value = position.requirements;
                             document.getElementById('edit_status').checked = position.status === 'active';
 
+                            // Puan alanlarını doldur
+                            document.getElementById('edit_portfolio_point').value = position.portfolio_point;
+                            document.getElementById('edit_certificate_point').value = position.certificate_point;
+                            document.getElementById('edit_education_point').value = position.education_point;
+                            document.getElementById('edit_reference_point').value = position.reference_point;
+                            document.getElementById('edit_experience_point').value = position.experience_point;
+
                             // Test seçimlerini güncelle
-                            $('#edit_tests').val(position.test_ids || []).trigger('change');
+                            const testIds = position.test_ids || [];
+                            $('#edit_tests').val(testIds).trigger('change');
+
+                            // Mevcut testlerin zorunluluk durumunu doldur
+                            const selectedTestsContainer = document.getElementById('edit-selected-tests-container');
+                            selectedTestsContainer.innerHTML = ''; // Önceki içeriği temizle
+
+                            if (position.tests_with_required) { // Backend'den testlerin zorunluluk durumu ile geldi
+                                position.tests_with_required.forEach(test => {
+                                    // createSelectedTestHtml fonksiyonunu kullanarak her test için HTML oluştur ve ekle
+                                    const testHtml = createSelectedTestHtml(test.test_id, test.test_title, test.required, 'edit');
+                                    selectedTestsContainer.innerHTML += testHtml;
+                                });
+                            }
 
                             // Modalı göster
                             const modal = new bootstrap.Modal(document.getElementById('editPositionModal'));

@@ -38,9 +38,9 @@ try {
         $stmt->bindParam(':application_id', $application_id);
         $stmt->execute();
         
-        header('Location: reports.php?success=1');
+        header('Location: interviews.php?success=1');
     } else {
-        header('Location: reports.php?error=1');
+        header('Location: interviews.php?error=1');
     }
 
 } catch (PDOException $e) {

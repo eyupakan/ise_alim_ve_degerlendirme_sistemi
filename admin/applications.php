@@ -131,6 +131,11 @@ $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="bi bi-file-earmark-text"></i> Başvurular
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="interviews.php">
+                                <i class="bi bi-calendar-event"></i> Mülakatlar
+                            </a>
+                        </li>
                         <li class="nav-item mt-3">
                             <a class="nav-link text-danger" href="logout.php">
                                 <i class="bi bi-box-arrow-right"></i> Çıkış Yap
@@ -145,6 +150,13 @@ $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Başvurular</h2>
                     <div class="d-flex gap-2">
+                        <form id="bulkActionForm" method="POST" action="bulk_applications_action.php">
+                            <div class="d-flex mb-2 gap-2">
+                                <button type="submit" name="bulk_delete" class="btn btn-danger btn-sm" onclick="return confirm('Seçili başvurular silinsin mi?')">
+                                    <i class="bi bi-trash"></i> Seçilenleri Sil
+                                </button>
+                            </div>
+                        </form>
                         <form action="" method="GET" class="d-flex gap-2">
                             <select name="position_id" class="form-select" onchange="this.form.submit()">
                                 <option value="0">Tüm Pozisyonlar</option>
@@ -178,11 +190,12 @@ $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <div class="alert alert-info">
                                 <?php echo empty($search) ? 'Henüz başvuru bulunmuyor.' : 'Arama kriterlerine uygun başvuru bulunamadı.'; ?>
                             </div>
-                        <?php else: ?>
+                        <?php endif; ?>
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th><input type="checkbox" id="selectAll"></th>
                                         <th>Aday</th>
                                         <th>Pozisyon</th>
                                         <th>İlerleme</th>
@@ -195,6 +208,7 @@ $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <tbody>
                                     <?php foreach ($applications as $application): ?>
                                     <tr>
+                                        <td><input type="checkbox" name="application_ids[]" value="<?php echo $application['id']; ?>" class="row-checkbox"></td>
                                         <td>
                                             <div><?php echo htmlspecialchars($application['candidate_name']); ?></div>
                                             <small class="text-muted"><?php echo htmlspecialchars($application['candidate_email']); ?></small>
@@ -269,7 +283,6 @@ $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </tbody>
                             </table>
                         </div>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -534,6 +547,79 @@ $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         });
                     }
                 });
+            });
+        });
+
+        // Tümünü seç/deselect
+        $('#selectAll').on('change', function() {
+            $('.row-checkbox').prop('checked', this.checked);
+        });
+        $('.row-checkbox').on('change', function() {
+            $('#selectAll').prop('checked', $('.row-checkbox:checked').length === $('.row-checkbox').length);
+        });
+
+        // Bulk delete functionality
+        $('#bulkActionForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedIds = [];
+            $('.row-checkbox:checked').each(function() {
+                selectedIds.push($(this).val());
+            });
+
+            if (selectedIds.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Uyarı!',
+                    text: 'Lütfen silmek istediğiniz başvuruları seçin.'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: `Seçili ${selectedIds.length} başvuruyu silmek istediğinizden emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, sil',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData();
+                    formData.append('action', 'bulk_delete');
+                    formData.append('ids', JSON.stringify(selectedIds));
+
+                    fetch('process_application.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Başarılı!',
+                                text: 'Seçili başvurular başarıyla silindi.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            throw new Error(data.error || 'Bir hata oluştu');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Hata:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata!',
+                            text: error.message
+                        });
+                    });
+                }
             });
         });
     </script>

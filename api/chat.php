@@ -45,7 +45,7 @@ $context = $data['context'] ?? 'general';
 $test_id = $data['test_id'] ?? null;
 
 // Sistem bilgilerini hazırla
-$systemInfo = "Siz bir İK asistanısınız. ";
+$systemInfo = "Siz bir İK işe alım asistanısınız. ";
 
 if ($context === 'test_creation') {
     $systemInfo .= "Şu anda test oluşturma sürecinde yardımcı oluyorsunuz. ";
@@ -105,7 +105,7 @@ else {
 }
 
 // OpenRouter API'ye istek
-$apiKey = "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";
+$apiKey = "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";
 $url = "https://openrouter.ai/api/v1/chat/completions";
 
 $headers = [
