@@ -1,12 +1,9 @@
 # İş Başvuru ve Değerlendirme Sistemi
 
-<<<<<<< HEAD
-Kapsamlı bir iş başvuru ve değerlendirme platformu. Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
-=======
 Kapsamlı bir iş başvuru ve değerlendirme platformu. Mevcut sistemlerin yapay zeka ile kelime eşleme sistemlerinin doğru adayı tespit edememe riskine karşılık olarak iş başvuru formunu bir standart haline getirerek adaylar için bir fırsat eşitliği yakalamasını hedefliyorum.
  
 Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
->>>>>>> 5303d69 (Bazı hatalar giderildi, tasarımda küçük değişiklikler yapıldı, forma yeni alanlar eklendi)
+
 
 ## 🌟 Özellikler
 
