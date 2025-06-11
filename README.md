@@ -83,3 +83,5 @@ Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertif
 
 - Eyüp Akan (eyupakan@outlook.com)
 - LinkedIn https://www.linkedin.com/in/eyupakan/
+
+🔐 Lisans: Bu proje MIT lisansı ile lisanslanmıştır. Detaylar için LICENSE dosyasını inceleyin.
