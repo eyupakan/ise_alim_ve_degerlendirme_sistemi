@@ -31,6 +31,22 @@ Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertif
 - MySQL 5.7 veya üzeri
 - Composer
 
+## 📦 Bağımlılıkların Kurulumu (vendor/ Klasörü)
+Bu projede PHP bağımlılıkları Composer kullanılarak yönetilmektedir. vendor/ klasörü, proje bağımlılıklarını içerdiği için büyük boyutlu ve otomatik üretilebilir bir dizindir. Bu nedenle Git deposuna dahil edilmemiştir.
+
+Projenin düzgün çalışabilmesi için aşağıdaki adımları takip ederek vendor/ klasörünü oluşturmalısınız:
+
+🛠️ Gerekli Kurulum
+Composer'ın yüklü olduğundan emin olun.
+Henüz yüklü değilse: https://getcomposer.org/
+
+Proje dizininde terminal açın ve şu komutu çalıştırın:
+
+```bash
+composer install
+```
+
+
 ## 📁 Dizin Yapısı
 
 ```
@@ -82,3 +98,5 @@ Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertif
 
 - Eyüp Akan (eyupakan@outlook.com)
 - LinkedIn https://www.linkedin.com/in/eyupakan/
+
+🔐 Lisans: Bu proje MIT lisansı ile lisanslanmıştır. Detaylar için LICENSE dosyasını inceleyin.
