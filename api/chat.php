@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once '../config/database.php';
+require_once '../config/load_env.php';
 
 // CORS ayarları
 header('Access-Control-Allow-Origin: *');
@@ -105,7 +106,14 @@ else {
 }
 
 // OpenRouter API'ye istek
-$apiKey = "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";
+$apiKey = getenv('OPENROUTER_API_KEY');
+if (!$apiKey) {
+    error_log("API key not found in environment variables");
+    http_response_code(500);
+    echo json_encode(['error' => 'API configuration error']);
+    exit();
+}
+
 $url = "https://openrouter.ai/api/v1/chat/completions";
 
 $headers = [

@@ -33,7 +33,7 @@ try {
     
     if ($stmt->execute()) {
         // Başvuru durumunu güncelle
-        $query = "UPDATE applications SET status = 'in_review' WHERE id = :application_id";
+        $query = "UPDATE applications SET status = 'accepted' WHERE id = :application_id";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':application_id', $application_id);
         $stmt->execute();

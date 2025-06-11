@@ -4,7 +4,6 @@ Kapsamlı bir iş başvuru ve değerlendirme platformu. Mevcut sistemlerin yapay
  
 Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertifikalar,iş deneyimi(aylık bazda), test puanları) puanlanmasıyla bir toplam puan hesaplar. İk personeli işe alım yaparken bu puanı göz önünde bulundurarak işe alım yapar.
 
-
 ## 🌟 Özellikler
 
 - 📋 4 Adımlı Başvuru Süreci
@@ -83,5 +82,3 @@ Bu sistem, adayların başvuru sırasında girdiği bilgilerin (örneğin sertif
 
 - Eyüp Akan (eyupakan@outlook.com)
 - LinkedIn https://www.linkedin.com/in/eyupakan/
-
-🔐 Lisans: Bu proje MIT lisansı ile lisanslanmıştır. Detaylar için LICENSE dosyasını inceleyin.

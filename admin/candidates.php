@@ -40,7 +40,7 @@ if ($position_id > 0) {
               c.photo_path
               FROM candidates c
               INNER JOIN applications a ON c.id = a.candidate_id
-              WHERE a.status = 'accepted'
+              WHERE a.status IN ('accepted', 'in_review')
               GROUP BY c.id, c.first_name, c.last_name, c.email, c.phone, c.created_at, c.photo_path
               ORDER BY MAX(a.total_points) DESC, c.created_at DESC";
     $stmt = $db->prepare($query);
