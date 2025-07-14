@@ -80,7 +80,7 @@ composer install
 - **İş İlanı Yönetimi**: Yeni iş ilanları ekleyebilir, mevcut ilanları düzenleyebilir veya silebilirsiniz.
 - **Başvuru Değerlendirme**: Gelen başvuruları görüntüleyebilir ve durumlarını güncelleyebilirsiniz.
 - **Test Yönetimi**: Test sorularını ekleyebilir, düzenleyebilir veya silebilirsiniz.
-![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_5.png)
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_5.jpg)
 ![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_4.png)
 ![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_1.png)
 ![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_2.png)
