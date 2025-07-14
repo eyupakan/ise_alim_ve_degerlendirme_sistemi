@@ -73,11 +73,18 @@ composer install
    - **Referanslar**: İş veya eğitim hayatınızdan referans olabilecek kişilerin iletişim bilgilerini ekleyin.
 4. **Testleri Tamamlama**: Başvurunuzu tamamlamak için gerekli testleri çözün.
 5. **Başvuru Onayı**: Tüm adımları tamamladıktan sonra başvurunuz onaylanacak ve değerlendirme sürecine alınacaktır.
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_6.png)
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_7.png)
 
 #### Admin Paneli
 - **İş İlanı Yönetimi**: Yeni iş ilanları ekleyebilir, mevcut ilanları düzenleyebilir veya silebilirsiniz.
 - **Başvuru Değerlendirme**: Gelen başvuruları görüntüleyebilir ve durumlarını güncelleyebilirsiniz.
 - **Test Yönetimi**: Test sorularını ekleyebilir, düzenleyebilir veya silebilirsiniz.
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_5.png)
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_4.png)
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_1.png)
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_2.png)
+![image alt](https://github.com/eyupakan/ise_alim_ve_degerlendirme_sistemi/blob/892bbe85d90c68717ee860cf5c0d8a491f6af148/uploads/photos/ui_3.png)
 
 
 #### Proje Yapısı
